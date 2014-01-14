@@ -38,6 +38,7 @@ module.exports = function(grunt) {
           }
         ]
       },
+
       // will be removed when SASS/Compass will be implemented
       css: {
         files: [
@@ -70,7 +71,7 @@ module.exports = function(grunt) {
 
       // watch for source script and test changes
       tests: {
-        files: [,
+        files: [
           'src/main/webapp/{app,assets,develop,plugin}/**/*.js',
           'src/test/js/{config,e2e,unit}/{,**/}*.js'
         ],
@@ -141,8 +142,7 @@ module.exports = function(grunt) {
 
     karma: {
       options: {
-        singleRun: true,
-        browsers: ['Chrome', 'Firefox', 'IE']
+        browsers: ['Chrome', 'Firefox']//, 'IE']
       },
 
       unit: {
