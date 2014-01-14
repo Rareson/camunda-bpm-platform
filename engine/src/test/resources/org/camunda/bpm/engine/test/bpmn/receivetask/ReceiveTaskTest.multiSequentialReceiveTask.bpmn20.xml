@@ -6,7 +6,11 @@
   <process id="testProcess" isExecutable="true">
     <startEvent id="theStart"/>
     <sequenceFlow sourceRef="theStart" targetRef="waitState"/>
-    <receiveTask id="waitState" name="Wait State" messageRef="newInvoice"/>
+    <receiveTask id="waitState" name="Wait State" messageRef="newInvoice">
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </receiveTask>
     <sequenceFlow sourceRef="waitState" targetRef="theEnd"/>
     <endEvent id="theEnd"/>
   </process>

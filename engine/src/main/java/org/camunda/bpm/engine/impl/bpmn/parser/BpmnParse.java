@@ -1810,7 +1810,9 @@ public class BpmnParse extends Parse {
 
     if (receiveTaskElement.attribute("messageRef") != null) {
       activity.setScope(true);
-      addEventSubscriptionDeclaration(parseMessageEventDefinition(receiveTaskElement), activity, receiveTaskElement);
+      EventSubscriptionDeclaration declaration = parseMessageEventDefinition(receiveTaskElement);
+      declaration.setActivityId(activity.getActivityId());
+      addEventSubscriptionDeclaration(declaration, activity, receiveTaskElement);
     }
 
     for (BpmnParseListener parseListener : parseListeners) {
