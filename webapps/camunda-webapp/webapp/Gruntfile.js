@@ -325,7 +325,7 @@ module.exports = function(grunt) {
     // for now, we do not use SASS/Compass
     // and therefore only copy the CSS files
     var useSass = false;
-    tasks.push(useSass ? 'compass:'+ this.target : 'copy:styles');
+    tasks.push(useSass ? 'compass:'+ this.target : 'copy:css');
 
     grunt.task.run(tasks);
   });
