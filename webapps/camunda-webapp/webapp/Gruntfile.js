@@ -33,6 +33,12 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'src/main/webapp/',
+            src: ['require-conf.js'],
+            dest: 'target/webapp/'
+          },
+          {
+            expand: true,
+            cwd: 'src/main/webapp/',
             src: ['{app,assets,plugin,develop}/{,**/}*.{js,html,jpg,png,gif}'],
             dest: 'target/webapp/'
           }
@@ -61,7 +67,8 @@ module.exports = function(grunt) {
       scripts: {
         files: [
           'Gruntfile.js',
-          'src/main/webapp/{app,assets,develop,plugin}/**/*.js'
+          'src/main/webapp/require-conf.js',
+          '{app,assets,develop,plugin}/**/*.js'
         ],
         tasks: [
           // 'jshint:scripts',
@@ -70,14 +77,18 @@ module.exports = function(grunt) {
       },
 
       // watch for source script and test changes
+      // QUESTION:
+      // Does that entry make sense?
+      // We can use `karma:unit` and `karma:e2e` instead of watching
       tests: {
         files: [
           'src/main/webapp/{app,assets,develop,plugin}/**/*.js',
-          'src/test/js/{config,e2e,unit}/{,**/}*.js'
+          'src/test/js/{config,e2e,test,unit}/{,**/}*.js'
         ],
         tasks: [
           // 'jshint:test',
           // we use the CI versions (who are runned only once)
+          'karma:testOnce',
           'karma:unitOnce',
           'karma:e2eOnce'
         ]
@@ -145,6 +156,11 @@ module.exports = function(grunt) {
         browsers: ['Chrome', 'Firefox']//, 'IE']
       },
 
+      // to test the testing environment
+      test: {
+        configFile: 'src/test/js/config/karma.test.js'
+      },
+
       unit: {
         configFile: 'src/test/js/config/karma.unit.js'
       },
@@ -155,11 +171,13 @@ module.exports = function(grunt) {
       //continuous integration mode: run tests once in PhantomJS browser.
       unitOnce: {
         singleRun: true,
+        autoWatch: false,
         configFile: 'src/test/js/config/karma.unit.js',
         browsers: ['PhantomJS']
       },
       e2eOnce: {
         singleRun: true,
+        autoWatch: false,
         configFile: 'src/test/js/config/karma.e2e.js',
         browsers: ['PhantomJS']
       }
