@@ -37,6 +37,17 @@ module.exports = function(grunt) {
             dest: 'target/webapp/'
           }
         ]
+      },
+      // will be removed when SASS/Compass will be implemented
+      css: {
+        files: [
+          {
+            expand: true,
+            cwd: 'src/main/webapp/assets/css',
+            src: ['{,**/}*.css'],
+            dest: 'target/webapp/assets/css'
+          }
+        ]
       }
     },
 
@@ -71,6 +82,7 @@ module.exports = function(grunt) {
         ]
       },
 
+      // temporary "styles" watch action until we use SASS/Compass
       styles: {
         files: [
           'src/main/webapp/scss/{**/,}*.{scss,sass}'
@@ -79,6 +91,17 @@ module.exports = function(grunt) {
           'compass:development'
         ]
       },
+
+      // TODO: use SASS/Compass to generate the CSS files,
+      // needs additional setup (installation of compass)
+      // styles: {
+      //   files: [
+      //     'src/main/webapp/scss/{**/,}*.{scss,sass}'
+      //   ],
+      //   tasks: [
+      //     'compass:development'
+      //   ]
+      // },
 
       servedAssets: {
         options: {
@@ -281,9 +304,10 @@ module.exports = function(grunt) {
       ]);
     }
 
-    tasks = tasks.concat([
-      'compass:'+ this.target
-    ]);
+    // for now, we do not use SASS/Compass
+    // and therefore only copy the CSS files
+    var useSass = false;
+    tasks.push(useSass ? 'compass:'+ this.target : 'copy:styles');
 
     grunt.task.run(tasks);
   });
