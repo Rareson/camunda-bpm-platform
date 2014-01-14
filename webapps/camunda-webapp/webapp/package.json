@@ -1,6 +1,7 @@
 {
   "name": "camunda-webapp",
   "version": "1.0.0",
+  "private": true,
   "devDependencies": {
     "karma-chrome-launcher": "~0.1.2",
     "karma-coffee-preprocessor": "~0.1.2",
@@ -9,7 +10,7 @@
     "karma-ng-scenario": "*",
     "karma-phantomjs-launcher": "~0.1.1",
     "karma-requirejs": "~0.2.1",
-    "karma-ie-launcher": "*",
+    "karma-ie-launcher": "~0.1.1",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-clean": "~0.5.0",
@@ -21,6 +22,9 @@
     "requirejs": "~2.1.10",
     "karma": "~0.10.9",
     "grunt": "~0.4.2",
-    "grunt-karma": "~0.6.2"
+    "grunt-karma": "~0.6.2",
+    "requirejs-angular-define": "git://github.com/Nikku/requirejs-angular-define",
+    "underscore": "~1.5.2",
+    "grunt-contrib-compass": "~0.7.0"
   }
 }
