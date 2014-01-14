@@ -1,0 +1,29 @@
+{
+  "name": "camunda-webapp",
+  "version": "7.1.0-alpha1",
+  "homepage": "https://github.com/camunda/camunda-bpm-platform",
+  "authors": [
+    "Nico Rehwaldt <nico.rehwaldt@camunda.com>",
+    "Valentin Vago <valentin.vago@camunda.com>"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.10",
+    "angular": "~1.2.8",
+    "angular-ui": "~0.4.0",
+    "bootstrap": "~3.0.3",
+    "bootstrap-slider": "*",
+    "better-placeholder-polyfill": "~1.1.1",
+    "dojo": "~1.9.2",
+    "jquery-ui": "~1.10.3",
+    "angular-data-depend": "camunda/angular-data-depend",
+    "camunda-bpmn.js": "camunda/camunda-bpmn.js"
+  }
+}

@@ -18,6 +18,11 @@
     <web.resources.override>src/main/runtime/default/webapp</web.resources.override>
     <java.resources.override>src/main/runtime/default/resources</java.resources.override>
     <properties.override>src/main/runtime/default/config.properties</properties.override>
+
+    <exec.shell>bash</exec.shell>
+    <exec.arg>-c</exec.arg>
+
+    <grunt.target>development</grunt.target>
   </properties>
 
   <dependencies>
@@ -109,6 +114,45 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>grunt-generate</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <workingDirectory></workingDirectory>
+              <executable>${exec.shell}</executable>
+              <arguments>
+                <argument>${exec.arg}</argument>
+                <argument>grunt</argument>
+                <argument>build:${grunt.target}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>grunt-test</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <workingDirectory></workingDirectory>
+              <executable>${exec.shell}</executable>
+              <arguments>
+                <argument>${exec.arg}</argument>
+                <argument>grunt</argument>
+                <argument>test</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
@@ -119,7 +163,7 @@
             </resource>
             <resource>
               <filtering>true</filtering>
-              <directory>src/main/webapp</directory>
+              <directory>target/webapp</directory>
               <!-- no filtering for favicon because linux destroys images through carriage return -->
               <excludes>
                 <exclude>assets/img/favicon.ico</exclude>
@@ -166,6 +210,48 @@
   </build>
 
   <profiles>
+    <!--
+    <profile>
+
+      <id>distro</id>
+      <build>
+        <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+        </plugins>
+      </build>
+    </profile>
+    -->
+
+    <profile>
+      <id>distro</id>
+      <properties>
+        <grunt.target>production</grunt.target>
+      </properties>
+    </profile>
+    <profile>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <exec.shell>cmd</exec.shell>
+        <exec.arg>/c</exec.arg>
+      </properties>
+    </profile>
     <profile>
       <id>tomcat</id>
       <dependencies>
@@ -250,9 +336,14 @@
             <artifactId>jetty-maven-plugin</artifactId>
             <version>8.1.14.v20131031</version>
             <configuration>
+              <webAppSourceDirectory>${project.basedir}/target/webapp</webAppSourceDirectory>
               <webAppConfig>
                 <contextPath>/camunda</contextPath>
                 <defaultsDescriptor>${project.basedir}/src/main/runtime/develop/jetty/webdefault.xml</defaultsDescriptor>
+                <!-- <baseResource>${project.basedir}/target/webapp</baseResource> -->
+<!--                 <resourceBases>
+                  <resourceBase>target/webapp</resourceBase>
+                </resourceBases> -->
               </webAppConfig>
             </configuration>
           </plugin>
