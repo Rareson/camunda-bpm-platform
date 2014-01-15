@@ -46,7 +46,7 @@ module.exports = function(grunt) {
       },
 
       // will be removed when SASS/Compass will be implemented
-      css: {
+      styles: {
         files: [
           {
             expand: true,
@@ -153,7 +153,7 @@ module.exports = function(grunt) {
 
     karma: {
       options: {
-        browsers: ['Chrome', 'Firefox']//, 'IE']
+        browsers: [ 'PhantomJS' ]//, 'IE']
       },
 
       // to test the testing environment
@@ -180,7 +180,13 @@ module.exports = function(grunt) {
         autoWatch: false,
         configFile: 'src/test/js/config/karma.e2e.js',
         browsers: ['PhantomJS']
-      }
+      },
+      testOnce: {
+        singleRun: true,
+        autoWatch: false,
+        configFile: 'src/test/js/config/karma.test.js',
+        browsers: ['PhantomJS']
+      },
     },
 
     // jsdoc : {
@@ -332,4 +338,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['build:production']);
+
+  grunt.registerTask('test', ['karma:testOnce']);
 };

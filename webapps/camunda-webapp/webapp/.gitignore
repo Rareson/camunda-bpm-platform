@@ -3,4 +3,5 @@
 projectFilesBackup
 test-results.xml
 /node_modules
+/node
 /bower_components
