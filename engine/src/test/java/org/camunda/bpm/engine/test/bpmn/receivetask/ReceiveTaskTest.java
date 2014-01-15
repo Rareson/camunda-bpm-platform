@@ -12,6 +12,7 @@
  */
 package org.camunda.bpm.engine.test.bpmn.receivetask;
 
+import org.camunda.bpm.engine.MismatchingMessageCorrelationException;
 import org.camunda.bpm.engine.impl.event.MessageEventHandler;
 import org.camunda.bpm.engine.impl.test.PluggableProcessEngineTestCase;
 import org.camunda.bpm.engine.runtime.EventSubscription;
@@ -44,14 +45,94 @@ public class ReceiveTaskTest extends PluggableProcessEngineTestCase {
     // given: a process instance waiting in the receive task
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
 
-    // then: there is a message event subscription for the task
-    EventSubscription subscription = getEventSubscriptionList().get(0);
-    assertNotNull(subscription);
+    // expect: there is a message event subscription for the task
+    List<EventSubscription> subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    EventSubscription subscription = subscriptionList.get(0);
 
     // then: we can trigger the event subscription
     runtimeService.messageEventReceived(subscription.getEventName(), subscription.getExecutionId());
 
     // expect: subscription is removed
+    assertEquals(0, getEventSubscriptionList().size());
+
+    // expect: this ends the process instance
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.singleReceiveTask.bpmn20.xml")
+  public void testSupportsCorrelateMessageOnSingleReceiveTask() {
+
+    // given: a process instance waiting in the receive task
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+
+    // expect: there is a message event subscription for the task
+    List<EventSubscription> subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    EventSubscription subscription = subscriptionList.get(0);
+
+    // then: we can correlate the event subscription
+    runtimeService.correlateMessage(subscription.getEventName());
+
+    // expect: subscription is removed
+    assertEquals(0, getEventSubscriptionList().size());
+
+    // expect: this ends the process instance
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.multiSequentialReceiveTask.bpmn20.xml")
+  public void testSupportsMessageEventReceivedOnSequentialMultiReceiveTask() {
+
+    // given: a process instance waiting in the first receive tasks
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+
+    // then: there are one message event subscription
+    List<EventSubscription> subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    EventSubscription subscription = subscriptionList.get(0);
+
+    // then: we can trigger the event subscription
+    runtimeService.messageEventReceived(subscription.getEventName(), subscription.getExecutionId());
+
+    // expect: the next event subscription is created
+    subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    subscription = subscriptionList.get(0);
+
+    // then: we can trigger the second event subscription
+    runtimeService.messageEventReceived(subscription.getEventName(), subscription.getExecutionId());
+
+    // expect: now event subscription left
+    assertEquals(0, getEventSubscriptionList().size());
+
+    // expect: this ends the process instance
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.multiSequentialReceiveTask.bpmn20.xml")
+  public void testSupportsCorrelateMessageOnSequentialMultiReceiveTask() {
+
+    // given: a process instance waiting in the first receive tasks
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+
+    // then: there are one message event subscription
+    List<EventSubscription> subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    EventSubscription subscription = subscriptionList.get(0);
+
+    // then: we can trigger the event subscription
+    runtimeService.correlateMessage(subscription.getEventName());
+
+    // expect: the next event subscription is created
+    subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    subscription = subscriptionList.get(0);
+
+    // then: we can trigger the second event subscription
+    runtimeService.correlateMessage(subscription.getEventName());
+
+    // expect: now event subscription left
     assertEquals(0, getEventSubscriptionList().size());
 
     // expect: this ends the process instance
@@ -80,56 +161,23 @@ public class ReceiveTaskTest extends PluggableProcessEngineTestCase {
   }
 
 
-  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.multiSequentialReceiveTask.bpmn20.xml")
-  public void testSupportsMessageEventReceivedOnSequentialMultiReceiveTask() {
-
-    // given: a process instance waiting in the first receive tasks
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
-
-    // then: there are one message event subscription
-    List<EventSubscription> subscriptions = getEventSubscriptionList();
-    assertEquals(1, subscriptions.size());
-
-    // then: we can trigger the event subscription
-    runtimeService.messageEventReceived(subscriptions.get(0).getEventName(), subscriptions.get(0).getExecutionId());
-
-    // expect: the next event subscription is created
-    subscriptions = getEventSubscriptionList();
-    assertEquals(1, subscriptions.size());
-
-    // then: we can trigger the second event subscription
-    runtimeService.messageEventReceived(subscriptions.get(0).getEventName(), subscriptions.get(0).getExecutionId());
-
-    // expect: now event subscription left
-    assertEquals(0, getEventSubscriptionList().size());
-
-    // expect: this ends the process instance
-    assertProcessEnded(processInstance.getId());
-  }
-
-  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.singleReceiveTask.bpmn20.xml")
-  public void testSupportsCorrelateMessageOnSingleReceiveTask() {
-
-    // given: a process instance waiting in the receive task
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
-
-    // then: there is a message event subscription for the task
-    EventSubscription subscription = getEventSubscriptionList().get(0);
-    assertNotNull(subscription);
-
-    // then: we can correlate the event subscription
-    runtimeService.correlateMessage(subscription.getEventName());
-
-    // expect: subscription is removed
-    assertEquals(0, getEventSubscriptionList().size());
-
-    // expect: this ends the process instance
-    assertProcessEnded(processInstance.getId());
-  }
-
-
   @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.multiParallelReceiveTask.bpmn20.xml")
-  public void FAILING_testSupportsCorrelateMessageOnParallelMultiReceiveTask() {
+  public void testNotSupportsCorrelateMessageOnParallelMultiReceiveTask() {
+
+    // given: a process instance waiting in two receive tasks
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+
+    // then: there are two message event subscriptions
+    List<EventSubscription> subscriptions = getEventSubscriptionList();
+    assertEquals(2, subscriptions.size());
+
+    // expect: we can not correlate an event
+    try {
+      runtimeService.correlateMessage(subscriptions.get(0).getEventName());
+      fail("should throw a mismatch");
+    } catch (MismatchingMessageCorrelationException e) {
+      // expected
+    }
   }
 
   @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.boundaryReceiveTask.bpmn20.xml")
@@ -145,7 +193,7 @@ public class ReceiveTaskTest extends PluggableProcessEngineTestCase {
     List<EventSubscription> subscriptions = getEventSubscriptionList("waitState");
     assertEquals(2, subscriptions.size());
 
-    // then: we can trigger the both receive tasks event subscriptions
+    // then: we can trigger both receive task event subscriptions
     runtimeService.messageEventReceived(subscriptions.get(0).getEventName(), subscriptions.get(0).getExecutionId());
     runtimeService.messageEventReceived(subscriptions.get(1).getEventName(), subscriptions.get(1).getExecutionId());
 
@@ -157,7 +205,7 @@ public class ReceiveTaskTest extends PluggableProcessEngineTestCase {
   }
 
   @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.boundaryReceiveTask.bpmn20.xml")
-  public void testSupportsMessageEventReceivedOnParallelMultiInstanceWithBoundaryReceived() {
+  public void testSupportsMessageEventReceivedOnParallelMultiInstanceWithBoundaryEventReceived() {
 
     // given: a process instance waiting in the receive task
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
@@ -185,13 +233,35 @@ public class ReceiveTaskTest extends PluggableProcessEngineTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
 
     // then: there is a message event subscription for the task
-    EventSubscription subscription = getEventSubscriptionList().get(0);
-    assertNotNull(subscription);
+    List<EventSubscription> subscriptionList = getEventSubscriptionList();
+    assertEquals(1, subscriptionList.size());
+    EventSubscription subscription = subscriptionList.get(0);
 
     // then: we can trigger the event subscription
     runtimeService.messageEventReceived(subscription.getEventName(), subscription.getExecutionId());
 
     // expect: subscription is removed
+    assertEquals(0, getEventSubscriptionList().size());
+
+    // expect: this ends the process instance
+    assertProcessEnded(processInstance.getId());
+  }
+
+  @Deployment(resources = "org/camunda/bpm/engine/test/bpmn/receivetask/ReceiveTaskTest.multiSubProcessReceiveTask.bpmn20.xml")
+  public void testSupportsMessageEventReceivedOnMultiSubProcessReceiveTask() {
+
+    // given: a process instance waiting in the parallel inner process receive task
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcess");
+
+    // then: there are two message event subscriptions
+    List<EventSubscription> subscriptions = getEventSubscriptionList();
+    assertEquals(2, subscriptions.size());
+
+    // then: we can trigger both receive task event subscriptions
+    runtimeService.messageEventReceived(subscriptions.get(0).getEventName(), subscriptions.get(0).getExecutionId());
+    runtimeService.messageEventReceived(subscriptions.get(1).getEventName(), subscriptions.get(1).getExecutionId());
+
+    // expect: subscriptions are removed
     assertEquals(0, getEventSubscriptionList().size());
 
     // expect: this ends the process instance

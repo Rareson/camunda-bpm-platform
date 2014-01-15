@@ -38,7 +38,6 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
     InterpretableExecution propagatingExecution = null;
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if (activity.isScope()) {
-      // this create a new execution child node
       propagatingExecution = (InterpretableExecution) execution.createExecution();
       propagatingExecution.setActivity(activity);
       propagatingExecution.setTransition(execution.getTransition());
