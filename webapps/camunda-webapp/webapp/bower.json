@@ -26,7 +26,9 @@
     "dojo": "~1.9.2",
     "dojox": "~1.9.2",
     "jquery": "~1.10",
-    "jquery-ui": "~1.10.3"
+    "jquery-ui": "~1.10.3",
+    "requirejs": "~2.1.10",
+    "requirejs-domready": "~2.0.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.8"

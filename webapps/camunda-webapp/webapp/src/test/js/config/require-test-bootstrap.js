@@ -1,5 +1,6 @@
 (function(document, window, require) {
   var pluginPackages = window.PLUGIN_PACKAGES || [];
+  var projectTestExp = /^\/base\/src\/test\/js.*Spec\.js$/;
 
   require([
     '/base/target/webapp/require-conf.js'
@@ -19,7 +20,7 @@
 
     var tests = [];
     for (var file in window.__karma__.files) {
-      if (/Spec\.js$/.test(file)) {
+      if (projectTestExp.test(file)) {
         tests.push(file);
       }
     }

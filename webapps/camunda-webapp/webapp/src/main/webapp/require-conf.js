@@ -17,22 +17,22 @@
   conf.baseUrl = '/camunda/',
 
   conf.paths = {
-    'domReady':                     'assets/vendor/require/domReady',
+    'domReady':                     'assets/vendor/requirejs-domready/domReady',
 
     'jquery':                       'assets/vendor/jquery/jquery',
     'jquery-mousewheel':            'assets/vendor/jquery/jquery.mousewheel',
     'jquery-overscroll':            'assets/vendor/jquery/jquery.overscroll',
 
-    'bootstrap':                    'assets/vendor/bootstrap/js/bootstrap',
+    'bootstrap':                    'assets/vendor/bootstrap/dist/js/bootstrap',
     'bootstrap-slider':             'assets/vendor/bootstrap-slider/bootstrap-slider',
 
     'angular':                      'assets/vendor/angular/angular',
     'angular-resource':             'assets/vendor/angular/angular-resource',
     'angular-sanitize':             'assets/vendor/angular/angular-sanitize',
-    'angular-ui':                   'assets/vendor/angular-ui/ui-bootstrap-dialog-tpls-0.5.0',
+    'angular-ui':                   'assets/vendor/angular-ui/dist/angular-ui',
 
-    'better-dom':                   'assets/vendor/better-dom',
-    'better-placeholder-polyfill':  'assets/vendor/better-placeholder-polyfill/better-placeholder-polyfill',
+    'better-dom':                   'assets/vendor/better-dom/dist/better-dom',
+    'better-placeholder-polyfill':  'assets/vendor/better-placeholder-polyfill/dist/better-placeholder-polyfill',
 
     'dojo':                         'assets/vendor/dojo',
     'dojox':                        'assets/vendor/dojox',
@@ -41,8 +41,8 @@
 
     // custom vendor libraries
     'requirejs-angular-define':     'assets/vendor/requirejs-angular-define/ngDefine',
-    'angular-data-depend':          'assets/vendor/angular-data-depend/dataDepend',
-    'bpmn':                         'assets/vendor/cabpmn',
+    'angular-data-depend':          'assets/vendor/angular-data-depend/src/dataDepend',
+    'bpmn':                         'assets/vendor/camunda-bpmn.js/src/bpmn',
     'camunda-common':               'assets/vendor/camunda-common',
 
     // -----------------------------------------
@@ -63,8 +63,11 @@
       deps:['jquery']
     },
 
-    bootstrap: {
+    'bootstrap': {
       deps: ['jquery']
+    },
+    'bootstrap-slider': {
+      deps: ['bootstrap']
     },
 
     'angular': {
@@ -86,6 +89,9 @@
     }
   };
 
+  // should be used for CommonJS modules
+  // ONLY, when they follow the CommonJS scaffolding patern
+  // which, is rare... very, very, rare
   conf.packages = {};
 
   return conf;

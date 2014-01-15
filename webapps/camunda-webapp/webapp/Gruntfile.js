@@ -33,13 +33,29 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'src/main/webapp/',
-            src: ['require-conf.js'],
+            src: [
+              'require-conf.js',
+              'index.html'
+            ],
             dest: 'target/webapp/'
           },
           {
             expand: true,
             cwd: 'src/main/webapp/',
-            src: ['{app,assets,plugin,develop}/{,**/}*.{js,html,jpg,png,gif}'],
+            src: [
+              // '{app,plugin,develop}/{,**/}*.{js,css,html,jpg,png,gif,eot,ttf,svg,woff}'
+              '{app,plugin,develop}/{,**/}*.js'
+            ],
+            dest: 'target/webapp/'
+          },
+          {
+            expand: true,
+            cwd: 'src/main/webapp/',
+            src: [
+              // 'assets/css',
+              'assets/img',
+              'assets/vendor'
+            ],
             dest: 'target/webapp/'
           }
         ]

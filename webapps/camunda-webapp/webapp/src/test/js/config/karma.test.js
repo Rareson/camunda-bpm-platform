@@ -1,4 +1,6 @@
 module.exports = function(karma) {
+  var conf = require('./../../../../src/main/webapp/require-conf');
+
   karma.set({
     basePath: '../../../..',
 
