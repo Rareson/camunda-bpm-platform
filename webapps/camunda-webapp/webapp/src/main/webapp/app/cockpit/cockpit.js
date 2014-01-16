@@ -16,7 +16,29 @@
 
   var plugins = window.PLUGIN_DEPENDENCIES || [];
 
-  var dependencies = [ 'jquery', 'angular', 'module:ng', 'module:ngResource', 'module:ui.bootstrap:angular-ui' ].concat(commons, cockpitCore, plugins);
+  var dependencies = [
+    'jquery',
+    'angular',
+    'module:ng',
+    'module:ngResource',
+    'module:ui.bootstrap:angular-ui'
+  ].concat(commons, cockpitCore, plugins);
+
+//   var paths = [], urls = {}, normalize = require('../../../require-conf').normalize;
+
+//   for (var d in dependencies) {
+//     var parts = dependencies[d].split(':');
+//     if (parts.length === 3) {
+//       paths.push(dependencies[d].split(':')[2]);
+//     }
+//   }
+
+//   var normalized;
+//   for (var p in paths) {
+//     normalized = normalize(paths[p]);
+//     urls[paths[p]] = normalize(require.toUrl(normalized));
+//   }
+// console.info('dependencies\n', urls);
 
   ngDefine('cockpit', dependencies, function(module, $, angular) {
 

@@ -31,93 +31,48 @@
     'angular-resource':             'assets/vendor/angular-resource/angular-resource',
     'angular-sanitize':             'assets/vendor/angular-sanitize/angular-sanitize',
     'angular-ui':                   'assets/vendor/angular-ui/build/angular-ui',
+    'angular-bootstrap':            'assets/vendor/angular-bootstrap/ui-bootstrap',
 
     'better-dom':                   'assets/vendor/better-dom/dist/better-dom',
     'better-placeholder-polyfill':  'assets/vendor/better-placeholder-polyfill/dist/better-placeholder-polyfill',
 
-    // 'dojo':                         'assets/vendor/dojo',
-    // 'dojox':                        'assets/vendor/dojox',
-
     // -----------------------------------------
 
     // custom vendor libraries
-    // 'ngDefine' :                    'assets/vendor/requirejs-angular-define/ngDefine',
     'ngDefine':                     'assets/vendor/requierjs-angular-define/src/ngDefine',
     'ngParse':                      'assets/vendor/requierjs-angular-define/src/ngParse',
     'bpmn':                         'assets/vendor/camunda-bpmn.js/src/bpmn',
     'angular-data-depend':          'assets/vendor/angular-data-depend/src/dataDepend',
 
-    // hahaha
     'requierjs-angular-define':     'assets/vendor/requierjs-angular-define/src/ngDefine',
-    'requirejs-angular-define':     'assets/vendor/requierjs-angular-define/src/ngDefine',
-
-    // -----------------------------------------
-
-    // 'camunda-common':               'app/common',
-    // 'admin':                        'app/admin/admin',
-    // 'cockpit':                      'app/cockpit/cockpit',
-    // 'cockpit-plugin':               'app/plugin/main',
-    // 'tasklist':                     'app/tasklist/tasklist'
+    'requirejs-angular-define':     'assets/vendor/requierjs-angular-define/src/ngDefine'
   };
 
   conf.shim = {
     'jquery': {
       exports: 'jQuery'
     },
-    'jquery-ui': {
-      deps:['jquery']
-    },
-    'jquery-mousewheel': {
-      deps:['jquery']
-    },
-    'jquery-overscroll': {
-      deps:['jquery']
-    },
+    'jquery-ui':          ['jquery'],
+    'jquery-mousewheel':  ['jquery'],
+    'jquery-overscroll':  ['jquery'],
 
-    'bootstrap': {
-      deps: ['jquery']
-    },
-    'bootstrap-slider': {
-      deps: ['bootstrap']
-    },
+    'bootstrap':          ['jquery'],
+    'bootstrap-slider':   ['bootstrap'],
 
     'angular': {
       exports: 'angular',
       deps: ['jquery']
     },
-    'angular-ui': {
-      deps: ['angular']
-    },
-    'angular-resource': {
-      deps: ['angular']
-    },
-    'angular-sanitize': {
-      deps: ['angular']
-    },
-
-    // -----------------------------------------
-
-    cockpit: {
-      exports: 'camunda-bpm-platform-cockpit',
-      deps: ['angular', 'bootstrap']
-    }
+    'angular-resource':   ['angular'],
+    'angular-sanitize':   ['angular'],
+    'angular-bootstrap':  ['bootstrap', 'angular'],
+    'angular-ui':         ['angular-bootstrap']
   };
 
   // should be used for CommonJS modules
   // ONLY, when they follow the CommonJS scaffolding patern
   // which, is rare... very, very, rare
   conf.packages = [
-    // {
-    //   name: 'admin',
-    //   main: 'admin',
-    //   location: 'app/admin'
-    // },
-    // {
-    //   name: 'tasklist',
-    //   main: 'tasklist',
-    //   location: 'app/tasklist'
-    // },
-
     {
       name: 'cockpit',
       main: 'cockpit',
@@ -135,17 +90,18 @@
 
     {
       name: 'dojo',
-      // main: 'main',
       location : 'assets/vendor/dojo'
     },
     {
       name: 'dojox',
-      // main: 'main',
       location : 'assets/vendor/dojox'
     }
   ];
 
-
+  // load livereload client library (without breaking other scripts execution)
+  require(['jquery'], function($) {
+    $('body').append('<script src="//'+ location.hostname +':35729/livereload.js?snipver=1"></script>');
+  }, function() {});
 
   return conf;
 }));
