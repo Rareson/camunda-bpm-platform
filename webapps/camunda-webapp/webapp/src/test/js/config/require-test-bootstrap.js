@@ -6,7 +6,7 @@
     '/base/target/webapp/require-conf.js'
   ], function(conf) {
     // test specific paths and shims
-    conf.paths['angular-mocks'] = '/base/src/test/js/lib/angular/angular-mocks';
+    conf.paths['angular-mocks'] = 'assets/vendor/angular-mocks/angular-mocks';
     conf.shim['angular-mocks'] = {
       deps: ['angular']
     };

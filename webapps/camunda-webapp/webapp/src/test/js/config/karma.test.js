@@ -10,13 +10,10 @@ module.exports = function(karma) {
     ],
 
     files: [
-      // { pattern: 'target/webapp/require-conf.js', included: false },
-      { pattern: 'target/webapp/**/*.js', included: false },
-      { pattern: 'src/test/js/test/**/*.js', included: false },
-      { pattern: 'src/test/js/lib/**/*.js', included: false },
+      { pattern: 'target/webapp{,/**}/*.js', included: false },
 
-      'target/webapp/require-conf.js',
-      'src/test/js/config/require-test-bootstrap.js'
+      'src/test/js/config/require-test-bootstrap.js',
+      { pattern: 'src/test/js/test/**/*.js', included: false },
     ],
 
     browsers: ['PhantomJS'],

@@ -20,41 +20,52 @@
     'domReady':                     'assets/vendor/requirejs-domready/domReady',
 
     'jquery':                       'assets/vendor/jquery/jquery',
-    'jquery-mousewheel':            'assets/vendor/jquery/jquery.mousewheel',
-    'jquery-overscroll':            'assets/vendor/jquery/jquery.overscroll',
+    'jquery-mousewheel':            'assets/vendor/jquery-mousewheel/jquery.mousewheel',
+    'jquery-overscroll':            'assets/vendor/jquery-overscroll/src/jquery.overscroll',
+    'jquery-ui':                    'assets/vendor/jquery-ui/ui/jquery-ui',
 
     'bootstrap':                    'assets/vendor/bootstrap/dist/js/bootstrap',
     'bootstrap-slider':             'assets/vendor/bootstrap-slider/bootstrap-slider',
 
     'angular':                      'assets/vendor/angular/angular',
-    'angular-resource':             'assets/vendor/angular/angular-resource',
-    'angular-sanitize':             'assets/vendor/angular/angular-sanitize',
-    'angular-ui':                   'assets/vendor/angular-ui/dist/angular-ui',
+    'angular-resource':             'assets/vendor/angular-resource/angular-resource',
+    'angular-sanitize':             'assets/vendor/angular-sanitize/angular-sanitize',
+    'angular-ui':                   'assets/vendor/angular-ui/build/angular-ui',
 
     'better-dom':                   'assets/vendor/better-dom/dist/better-dom',
     'better-placeholder-polyfill':  'assets/vendor/better-placeholder-polyfill/dist/better-placeholder-polyfill',
 
-    'dojo':                         'assets/vendor/dojo',
-    'dojox':                        'assets/vendor/dojox',
+    // 'dojo':                         'assets/vendor/dojo',
+    // 'dojox':                        'assets/vendor/dojox',
 
     // -----------------------------------------
 
     // custom vendor libraries
-    'requirejs-angular-define':     'assets/vendor/requirejs-angular-define/ngDefine',
-    'angular-data-depend':          'assets/vendor/angular-data-depend/src/dataDepend',
+    // 'ngDefine' :                    'assets/vendor/requirejs-angular-define/ngDefine',
+    'ngDefine':                     'assets/vendor/requierjs-angular-define/src/ngDefine',
+    'ngParse':                      'assets/vendor/requierjs-angular-define/src/ngParse',
     'bpmn':                         'assets/vendor/camunda-bpmn.js/src/bpmn',
-    'camunda-common':               'assets/vendor/camunda-common',
+    'angular-data-depend':          'assets/vendor/angular-data-depend/src/dataDepend',
+
+    // hahaha
+    'requierjs-angular-define':     'assets/vendor/requierjs-angular-define/src/ngDefine',
+    'requirejs-angular-define':     'assets/vendor/requierjs-angular-define/src/ngDefine',
 
     // -----------------------------------------
 
-    admin:                          'app/admin',
-    cockpit:                        'app/cockpit',
-    tasklist:                       'app/tasklist'
+    // 'camunda-common':               'app/common',
+    // 'admin':                        'app/admin/admin',
+    // 'cockpit':                      'app/cockpit/cockpit',
+    // 'cockpit-plugin':               'app/plugin/main',
+    // 'tasklist':                     'app/tasklist/tasklist'
   };
 
   conf.shim = {
     'jquery': {
       exports: 'jQuery'
+    },
+    'jquery-ui': {
+      deps:['jquery']
     },
     'jquery-mousewheel': {
       deps:['jquery']
@@ -74,6 +85,9 @@
       exports: 'angular',
       deps: ['jquery']
     },
+    'angular-ui': {
+      deps: ['angular']
+    },
     'angular-resource': {
       deps: ['angular']
     },
@@ -92,7 +106,46 @@
   // should be used for CommonJS modules
   // ONLY, when they follow the CommonJS scaffolding patern
   // which, is rare... very, very, rare
-  conf.packages = {};
+  conf.packages = [
+    // {
+    //   name: 'admin',
+    //   main: 'admin',
+    //   location: 'app/admin'
+    // },
+    // {
+    //   name: 'tasklist',
+    //   main: 'tasklist',
+    //   location: 'app/tasklist'
+    // },
+
+    {
+      name: 'cockpit',
+      main: 'cockpit',
+      location: 'app/cockpit'
+    },
+    {
+      name: 'cockpit-plugin',
+      location: 'app/plugin'
+    },
+
+    {
+      name: 'camunda-common',
+      location: 'app/common'
+    },
+
+    {
+      name: 'dojo',
+      // main: 'main',
+      location : 'assets/vendor/dojo'
+    },
+    {
+      name: 'dojox',
+      // main: 'main',
+      location : 'assets/vendor/dojox'
+    }
+  ];
+
+
 
   return conf;
 }));
