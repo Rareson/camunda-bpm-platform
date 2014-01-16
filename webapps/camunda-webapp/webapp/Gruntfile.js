@@ -92,7 +92,7 @@ module.exports = function(grunt) {
         tasks: [
           // 'jshint:scripts',
           // 'newer:copy:development'
-          'copy:development'
+          'newer:copy:development'
         ]
       },
 
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
       // We can use `karma:unit` and `karma:e2e` instead of watching
       tests: {
         files: [
-          'src/main/webapp/{app,assets,develop,plugin}/**/*.js',
+          // 'src/main/webapp/{app,develop,plugin}/**/*.js',
           'src/test/js/{config,e2e,test,unit}/{,**/}*.js'
         ],
         tasks: [
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
           'src/main/webapp/styles/{**/,}*.less'
         ],
         tasks: [
-          'less:development'
+          'newer:less:development'
         ]
       },
 
@@ -311,7 +311,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bower-task');
   // grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
-  // grunt.loadNpmTasks('grunt-newer');
+  grunt.loadNpmTasks('grunt-newer');
 
   // custom task for ngDefine minification
   grunt.registerMultiTask('ngr', 'Minifies the angular related scripts', function() {
@@ -348,12 +348,12 @@ module.exports = function(grunt) {
     }
     else {
       tasks = tasks.concat([
-        'copy:assets',
-        'copy:development'
+        'newer:copy:assets',
+        'newer:copy:development'
       ]);
     }
 
-    tasks.push('less:'+ this.target);
+    tasks.push('newer:less:'+ this.target);
 
     grunt.task.run(tasks);
   });
