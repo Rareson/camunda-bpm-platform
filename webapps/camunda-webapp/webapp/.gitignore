@@ -6,4 +6,5 @@ test-results.xml
 /node_modules
 /bower_components
 /src/main/webapp/assets/_vendor
+/src/main/webapp/assets/_css
 /src/main/webapp/assets/vendor
