@@ -4,11 +4,18 @@ var _ = require('underscore');
 
 module.exports = function(grunt) {
   var packageJSON = grunt.file.readJSON('package.json');
-  // var requireConf = require('./src/main/webapp/requirejs-conf');
+  var copyVendorFileExp = /(\/|\\)(lib|resource|demo|example|test|doc)/i;
 
   // Project configuration.
   grunt.initConfig({
     pkg: packageJSON,
+
+    bower: {
+      options: {},
+      project: {
+        targetDir: 'src/main/webapp/assets/vendor'
+      }
+    },
 
     build: {
       production: {},
@@ -18,6 +25,9 @@ module.exports = function(grunt) {
     clean: {
       target: [
         'target/webapp'
+      ],
+      assets: [
+        'target/webapp/assets'
       ]
     },
 
@@ -43,32 +53,26 @@ module.exports = function(grunt) {
             expand: true,
             cwd: 'src/main/webapp/',
             src: [
-              // '{app,plugin,develop}/{,**/}*.{js,css,html,jpg,png,gif,eot,ttf,svg,woff}'
-              '{app,plugin,develop}/{,**/}*.js'
-            ],
-            dest: 'target/webapp/'
-          },
-          {
-            expand: true,
-            cwd: 'src/main/webapp/',
-            src: [
-              // 'assets/css',
-              'assets/img',
-              'assets/vendor'
+              '{app,plugin,develop}/{,**/}*.{js,html}'
             ],
             dest: 'target/webapp/'
           }
         ]
       },
 
-      // will be removed when SASS/Compass will be implemented
-      css: {
+      assets: {
         files: [
           {
             expand: true,
-            cwd: 'src/main/webapp/assets/css',
-            src: ['{,**/}*.css'],
-            dest: 'target/webapp/assets/css'
+            cwd: 'src/main/webapp/assets',
+            src: [
+              'img/**/*',
+              'vendor/**/*.{js,css,jpg,png,gif,html,eot,ttf,svg,woff}'
+            ],
+            // filter: function(filepath) {
+            //   return !copyVendorFileExp.test(filepath);
+            // },
+            dest: 'target/webapp/assets'
           }
         ]
       }
@@ -82,12 +86,12 @@ module.exports = function(grunt) {
       // watch for source script changes
       scripts: {
         files: [
-          'Gruntfile.js',
           'src/main/webapp/require-conf.js',
-          '{app,assets,develop,plugin}/**/*.js'
+          'src/main/webapp/{app,develop,plugin}/**/*.{js,html}'
         ],
         tasks: [
           // 'jshint:scripts',
+          // 'newer:copy:development'
           'copy:development'
         ]
       },
@@ -104,39 +108,27 @@ module.exports = function(grunt) {
         tasks: [
           // 'jshint:test',
           // we use the CI versions (who are runned only once)
-          'karma:testOnce',
+          // 'karma:testOnce',
           'karma:unitOnce',
           'karma:e2eOnce'
         ]
       },
 
-      // temporary "styles" watch action until we use SASS/Compass
       styles: {
         files: [
-          'src/main/webapp/scss/{**/,}*.{scss,sass}'
+          'src/main/webapp/styles/{**/,}*.less'
         ],
         tasks: [
-          'compass:development'
+          'less:development'
         ]
       },
-
-      // TODO: use SASS/Compass to generate the CSS files,
-      // needs additional setup (installation of compass)
-      // styles: {
-      //   files: [
-      //     'src/main/webapp/scss/{**/,}*.{scss,sass}'
-      //   ],
-      //   tasks: [
-      //     'compass:development'
-      //   ]
-      // },
 
       servedAssets: {
         options: {
           livereload: true
         },
         files: [
-          'target/webapp/{app,plugin,develop,assets}/**/*.{js,jpg,png,gif,html}'
+          'target/webapp/{app,plugin,develop,assets}/**/*.{css,js}'
         ],
         tasks: []
       }
@@ -211,20 +203,32 @@ module.exports = function(grunt) {
     //   }
     // },
 
-    // compass: {
-    //   options: {
-    //     sassDir: 'src/main/webapp/scss',
-    //     cssDir: 'target/webapp/assets/css'
-    //   },
-    //   production: {
-    //     options: {
-    //       environment: 'production'
-    //     }
-    //   },
-    //   development: {
-    //     options: {}
-    //   }
-    // },
+    less: {
+      options: {
+        // paths: []
+      },
+
+      production: {
+        options: {
+          cleancss: true
+        },
+        files: {
+          'target/webapp/assets/css/common.css': 'src/main/webapp/styles/common.less',
+          'target/webapp/assets/css/cockpit/loader.css': 'src/main/webapp/styles/cockpit/loader.less',
+          'target/webapp/assets/css/admin/loader.css': 'src/main/webapp/styles/admin/loader.less',
+          'target/webapp/assets/css/tasklist/loader.css': 'src/main/webapp/styles/tasklist/loader.less'
+        }
+      },
+
+      development: {
+        files: {
+          'target/webapp/assets/css/common.css': 'src/main/webapp/styles/common.less',
+          'target/webapp/assets/css/cockpit/loader.css': 'src/main/webapp/styles/cockpit/loader.less',
+          'target/webapp/assets/css/admin/loader.css': 'src/main/webapp/styles/admin/loader.less',
+          'target/webapp/assets/css/tasklist/loader.css': 'src/main/webapp/styles/tasklist/loader.less'
+        }
+      }
+    },
 
     // requirejs: {
     // ngr: {
@@ -297,9 +301,11 @@ module.exports = function(grunt) {
   // grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  // grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-bower-task');
   // grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
+  // grunt.loadNpmTasks('grunt-newer');
 
   // custom task for ngDefine minification
   grunt.registerMultiTask('ngr', 'Minifies the angular related scripts', function() {
@@ -321,7 +327,8 @@ module.exports = function(grunt) {
   // Aimed to hold more complex build processes
   grunt.registerMultiTask('build', 'Build the frontend assets', function() {
     var tasks = [
-      'clean'
+      'clean',
+      'bower'
     ];
 
     if (this.target === 'production') {
@@ -329,19 +336,18 @@ module.exports = function(grunt) {
         // TODO: minification using ngr:
         // - Minifaction: https://app.camunda.com/jira/browse/CAM-1667
         // - Bug in ngDefine: https://app.camunda.com/jira/browse/CAM-1713
+        'copy:assets',
         'copy:development'
       ]);
     }
     else {
       tasks = tasks.concat([
+        'copy:assets',
         'copy:development'
       ]);
     }
 
-    // for now, we do not use SASS/Compass
-    // and therefore only copy the CSS files
-    var useSass = false;
-    tasks.push(useSass ? 'compass:'+ this.target : 'copy:css');
+    tasks.push('less:'+ this.target);
 
     grunt.task.run(tasks);
   });
